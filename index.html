@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>323280 시세</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .price {
+      font-size: 48px;
+      font-weight: bold;
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+    .change {
+      font-size: 28px;
+      color: #34495e;
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="price" id="price">불러오는 중...</div>
+  <div class="change" id="daily">불러오는 중...</div>
+  <div class="change" id="weekly">불러오는 중...</div>
+
+  <script>
+    const url = 'http://localhost:5000/stock?code=323280'; // 실제 서버 IP, 포트로 변경하세요.
+
+    async function update() {
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.error) {
+          throw new Error(data.error);
+        }
+
+        const current = parseFloat(data.price.replace(/,/g, ''));
+        const yesterday = data.yesterday ? parseFloat(data.yesterday.replace(/,/g, '')) : null;
+        const lastweek = data.lastweek ? parseFloat(data.lastweek.replace(/,/g, '')) : null;
+
+        document.getElementById('price').textContent = current.toLocaleString() + ' 원';
+
+        if (yesterday) {
+          const dailyChange = ((current - yesterday) / yesterday * 100).toFixed(2);
+          document.getElementById('daily').textContent = `전일 대비: ${dailyChange}%`;
+        } else {
+          document.getElementById('daily').textContent = '전일 대비 데이터 없음';
+        }
+
+        if (lastweek) {
+          const weeklyChange = ((current - lastweek) / lastweek * 100).toFixed(2);
+          document.getElementById('weekly').textContent = `지난주 대비: ${weeklyChange}%`;
+        } else {
+          document.getElementById('weekly').textContent = '지난주 대비 데이터 없음';
+        }
+      } catch (error) {
+        document.getElementById('price').textContent = '데이터를 불러올 수 없습니다';
+        document.getElementById('daily').textContent = '';
+        document.getElementById('weekly').textContent = '';
+        console.error(error);
+      }
+    }
+
+    update();
+    setInterval(update, 60000); // 60초마다 갱신
+  </script>
+</body>
+</html>
