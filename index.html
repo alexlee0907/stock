@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>323280 시세</title>
+  <title>323280</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -51,7 +51,7 @@
         const lastweek = data.lastweek ? parseFloat(data.lastweek.replace(/,/g, '')) : null;
 
         // 현재가 표시 (한국 통화 포맷)
-        document.getElementById('price').textContent = current.toLocaleString('ko-KR') + ' 원';
+        document.getElementById('price').textContent = current.toLocaleString('ko-KR') + '';
 
         // 전일 대비 변동률 계산 및 표시
         if (yesterday) {
